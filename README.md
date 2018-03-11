@@ -49,12 +49,12 @@ Database တည္ေဆာက္ရာမွာ ေအာ္ကပါအတိ�
 
 အောက်ပါအတိုင်း ရေး ရန်သာလိုပါသည်။
   
-sanDBHandler.createDatabaseByClass("HERO",Note.class,Book.class);
+	sanDBHandler.createDatabaseByClass("HERO",Note.class,Book.class);
 
 အထက်ပါ ဥပမာအရ Note နှင့် Book table နှစ်ခု Hero ဟုခေါ်သော database file အတွင်းတည်ဆောက်သွားမည်ဖြစ်သည်။
 
 # ၂။  Assest folder ထဲမွ database အားအသံုးျပဳ ျခင္း
-createDatabaseFromAsset(Activity activity, String databaseName, Class<?> defaultTableClass) ဟုခေါ်ရန်သာ လိုပါသည်။
+	createDatabaseFromAsset(Activity activity, String databaseName, Class<?> defaultTableClass) 
 
 # ၃။  အေသးစိတ္ေရး၍ တည္ေဆာက္ျခင္း
 
