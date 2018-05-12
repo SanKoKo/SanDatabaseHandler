@@ -20,9 +20,9 @@ This library is design to handle the SQL Database easily in android.
 	
 	Bitmap column တည်ဆောက်ခြင်းဖြင့် လွယ်ကူစွာ image များ သိမ်းနိုင် query လုပ်နိုင်ခြင်း။
 
-Library ေလးကိုအသံုးျပဳမယ္ဆိုရင္ေတာ့
+Library လေးကိုအသုံးပြုမယ်ဆိုရင်တော့
 
-root build.gradle ထဲက allproject ထဲမွာ ေအာက္ပါအတုိင္း maven url ေလး ထည့္ေပးရပါမယ္။
+root build.gradle ထဲက allproject ထဲမှာအောက်ပါအတိုင်း maven url လေးထည့်ပေးရပါမယ်။
 
 	allprojects {
  		repositories {
@@ -31,14 +31,14 @@ root build.gradle ထဲက allproject ထဲမွာ ေအာက္ပါအ�
 		}
 	}
 
-app gradle ထဲက dependencies ထဲမွာ ေတာ့ ေအာက္ပါအတုိင္း ထည့္ရပါမယ္။
+app gradle ထဲက dependencies ထဲမှာအောက်ပါအတိုင်း ထည့်ပေးရပါမယ်။
 
 	dependencies {
-		compile 'com.github.SanKoKo:SanDatabaseHandler:1.0'
+		implementation 'com.github.SanKoKo:SanDatabaseHandler:1.2'
 	}
 
 
-Sync Now ကိုႏွိပ္ၿပီး build လုပ္ပါ။ build လုပ္တာၿပီးသြားရင္ေတာ့ library ကို အသံုးျပဳႏိုင္ပါၿပီး။
+Sync Now ကိုႏွိပ္ၿပီး build လုပ္ပါ။ build လုပ်ပြီးသွားရင်တော့ library ကို အသံုးျပဳႏိုင္ပါၿပီး။
 
 
 	SanDBHandler sanDBHandler = new SanDBHandler(this);
