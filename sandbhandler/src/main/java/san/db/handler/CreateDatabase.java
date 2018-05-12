@@ -85,10 +85,14 @@ class CreateDatabase extends SQLiteOpenHelper{
 				}
 			}
 			String sql = "CREATE TABLE " + table.getTbName() + "( " + allCombine() + ");";
+			if(SanDBHandler.getShowLog()){
+				System.out.println("SanSQL Log : "+sql);
+			}
 			try {
 				arg0.execSQL(sql);
 			} catch (Exception e) {
-				throw new SanDBHandlerErrorException(e.getMessage());
+				e.printStackTrace();
+				//throw new SanDBHandlerErrorException(e.getMessage());
 
 			}
 		}
@@ -220,6 +224,10 @@ class CreateDatabase extends SQLiteOpenHelper{
 				sql = "SELECT * FROM "+tb;
 			}
 
+			if(SanDBHandler.getShowLog()){
+				System.out.println("SanSQL Log : "+sql);
+			}
+
 			sqLiteDatabase = getReadableDatabase();
 			Cursor cursor = sqLiteDatabase.rawQuery(sql,null);
 
@@ -231,7 +239,7 @@ class CreateDatabase extends SQLiteOpenHelper{
 				columns = table.getColumns();
 			}
 
-			Log.d("MSQL",sql+" :: "+cursor.getColumnCount());
+
 			//columns = new Column[cursor.getColumnCount()];
 			for(int i=0;i<cursor.getColumnCount();i++)
 			{
@@ -336,16 +344,19 @@ class CreateDatabase extends SQLiteOpenHelper{
 		sqLiteDatabase = getWritableDatabase();
         Field[] fields = sanDbResult.getClass().getDeclaredFields();
 		HashMap<String,Column> mapColumn = new HashMap<>();
-		if(tableName==null)
-		{
-			tableName = tables[0].getTbName();
-		}
 
-		try {
+		Table  table = SanDBHandler.mTable(sanDbResult.getClass());
+		columns = table.getColumns();
+		//tableName = table.getTbName();
+		/*try {
 			columns = tableHash.get(tableName).getColumns();
 		} catch (NullPointerException npe){
-			Table table = SanDBHandler.mTable(sanDbResult.getClass());
+			 table = SanDBHandler.mTable(sanDbResult.getClass());
 			columns = table.getColumns();
+		}*/
+		if(tableName==null)
+		{
+			tableName = table.getTbName();
 		}
 
 		for(Column column: columns)
@@ -380,6 +391,8 @@ class CreateDatabase extends SQLiteOpenHelper{
 			}
         }
 
+
+
         if(!update) {
 				sqLiteDatabase.insert(tableName, null, contentValues);
 		} else {
@@ -395,23 +408,29 @@ class CreateDatabase extends SQLiteOpenHelper{
 	 void delete(SanDbResult sanDbResult, String tableName,String where,String[] whereArgs) throws NoSuchFieldException, IllegalAccessException {
 		sqLiteDatabase = getWritableDatabase();
         Field[] fields = sanDbResult.getClass().getDeclaredFields();
-        if(tableName==null)
+		Table  table = SanDBHandler.mTable(sanDbResult.getClass());
+		if(tableName==null)
 		{
-			tableName = tables[0].getTbName();
+			tableName = table.getTbName();
 		}
-        for(Field field : fields)
-        {
-			field = sanDbResult.getClass().getDeclaredField(field.getName());
-			field.setAccessible(true);
-			if(field.getName().equals("id")){
-				sqLiteDatabase.delete(tableName, "id = ?", new String[]{String.valueOf(field.get(sanDbResult))});
-				break;
+
+		if(where==null&&whereArgs==null) {
+
+			for (Field field : fields) {
+				field = sanDbResult.getClass().getDeclaredField(field.getName());
+				field.setAccessible(true);
+				if (field.getName().equals("id")) {
+					sqLiteDatabase.delete(tableName, "id = ?", new String[]{String.valueOf(field.get(sanDbResult))});
+					break;
+				}
 			}
-        }
+		}else {
+			deleteByQuery(tableName,where,whereArgs);
+		}
 	}
 
 	
-	 void deleteByQuery(String tableName,String where,String[] whereArgs) throws NoSuchFieldException, IllegalAccessException {
+	 private void deleteByQuery(String tableName, String where, String[] whereArgs) throws NoSuchFieldException, IllegalAccessException {
 		sqLiteDatabase = getWritableDatabase();
        if(tableName==null)
 		{

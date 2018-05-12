@@ -5,7 +5,7 @@ import java.util.List;
 
 public class SanDbResult<T> {
 	
-	
+	@Deprecated
 	public static <T extends SanDbResult<T>> List<T> getAllData(Class<?> mClass,String tableName) {
 		try {
 			return  CreateDatabase.getInstance().getAllData(mClass, tableName, null,null);
@@ -28,8 +28,10 @@ public class SanDbResult<T> {
 		return null;
 	}
 
+	@Deprecated
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static <T extends SanDbResult> T getDataById(Class<?> mClass,int id,String tableName){
+
 
 		try {
 			List<T> list =CreateDatabase.getInstance().getAllData(mClass, tableName, "id=?",new String[]{String.valueOf(id)});
@@ -48,7 +50,9 @@ public class SanDbResult<T> {
 		}
 		return null;
 	}
+	@Deprecated
 	public void insert(String tableName) {
+
 		try {
 			CreateDatabase.getInstance().add(this,tableName,false,null,null);
 		} catch (NoSuchFieldException e) {
@@ -60,8 +64,9 @@ public class SanDbResult<T> {
 
 
 	public static <T extends SanDbResult<T>> List<T> getAllData(Class<?> mClass) {
+		Table table = SanDBHandler.mTable(mClass);
 		try {
-			return CreateDatabase.getInstance().getAllData(mClass, null, null,null);
+			return CreateDatabase.getInstance().getAllData(mClass, table.getTbName(), null,null);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (InstantiationException e) {
@@ -82,8 +87,9 @@ public class SanDbResult<T> {
 	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static <T extends SanDbResult> T getDataById(Class<?> mClass,int id){
+		Table table = SanDBHandler.mTable(mClass);
 		try {
-			List<T> list =CreateDatabase.getInstance().getAllData(mClass, null, "id=?",new String[]{String.valueOf(id)});
+			List<T> list =CreateDatabase.getInstance().getAllData(mClass, table.getTbName(), "id=?",new String[]{String.valueOf(id)});
 			return list.get(0);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -108,7 +114,30 @@ public class SanDbResult<T> {
 		}
 	}
 
+	public static <T extends SanDbResult<T>> List<T> getAllDataByQuery(Class<?> mClass,String whereQuery,String[] whereArgs){
+		Table table = SanDBHandler.mTable(mClass);
+		try {
+			return CreateDatabase.getInstance().getAllData(mClass,table.getTbName(),whereQuery,whereArgs);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
 
+		return null;
+	}
+
+@Deprecated
 	public static <T extends SanDbResult<T>> List<T> getAllDataByQuery(Class<?> mClass,String tableName,String whereQuery,String[] whereArgs){
 		try {
 			return CreateDatabase.getInstance().getAllData(mClass,tableName,whereQuery,whereArgs);
@@ -131,6 +160,27 @@ public class SanDbResult<T> {
 		return null;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static <T extends SanDbResult> T getDataByQuery(Class<?> mClass,String whereQuery,String[] whereArgs){
+		Table table = SanDBHandler.mTable(mClass);
+		try {
+			List<T> list =CreateDatabase.getInstance().getAllData(mClass, table.getTbName(),whereQuery,whereArgs);
+			return list.get(0);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Deprecated
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static <T extends SanDbResult> T getDataByQuery(Class<?> mClass,String tableName,String whereQuery,String[] whereArgs){
 
@@ -166,23 +216,39 @@ public class SanDbResult<T> {
 	public void delete(){
 		try {
 			CreateDatabase.getInstance().delete(this, null, null, null);
-		} catch (NoSuchFieldException | IllegalAccessException e) {
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
 	}
-	
+	@Deprecated
 	public void delete(String tableName){
 		try {
 			CreateDatabase.getInstance().delete(this, tableName, null, null);
-		} catch (NoSuchFieldException | IllegalAccessException e) {
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public static void deleteByQuery(String tableName,String where,String[] whereArgs) {
+	@Deprecated
+	public  void delete(String tableName,String where,String[] whereArgs) {
 		try {
-			CreateDatabase.getInstance().deleteByQuery(tableName, where, whereArgs);
-		} catch (NoSuchFieldException | IllegalAccessException e) {
+			CreateDatabase.getInstance().delete(this,tableName, where, whereArgs);
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public  void delete(String where,String[] whereArgs) {
+		try {
+			CreateDatabase.getInstance().delete(this,null, where, whereArgs);
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
 	}

@@ -17,9 +17,12 @@ import android.os.Environment;
 public class SanDBHandler {
 	private Database database;
 	private Context context;
-	
+
+	private static Boolean showLog=false;
+	static Boolean getShowLog() {return showLog;}
+
 	private static Boolean secure=false;
-	public static Boolean getSecure() {
+	static Boolean getSecure() {
 		return secure;
 	}
 	public void setSecure(Boolean secure) {
@@ -232,5 +235,9 @@ public class SanDBHandler {
 			Table tb = mTable(defaultTableClass);
 			new CreateDatabase(activity,databaseName,tb);
 
+	}
+
+	public void showSQLog(){
+		showLog = true;
 	}
 }
