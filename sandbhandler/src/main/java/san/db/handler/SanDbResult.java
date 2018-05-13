@@ -202,7 +202,17 @@ public class SanDbResult<T> {
     }
 
 
+	public void update(String where,String[] whereArgs) {
+		try {
+			CreateDatabase.getInstance().add(this,null,true,where,whereArgs);
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+	}
 
+@Deprecated
 	public void update(String tableName,String where,String[] whereArgs) {
 		try {
 			CreateDatabase.getInstance().add(this,tableName,true,where,whereArgs);

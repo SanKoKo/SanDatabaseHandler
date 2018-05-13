@@ -7,18 +7,26 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import san.db.handler.Column;
+import san.db.handler.Database;
+import san.db.handler.SanDBHandler;
+import san.db.handler.Table;
 
 
 public class MainActivity extends AppCompatActivity {
     Spinner spinner;
     EditText ed_name,ed_fee,ed_course,ed_fathername;
-    ArrayList<Student> arrayList;
+    List<Student> mList;
+    SanDBHandler sanDBHandler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        sanDBHandler = new SanDBHandler(this);
         spinner =  findViewById(R.id.spinner);
-        arrayList = new ArrayList<>();
+        mList = new ArrayList<>();
         ed_fathername = findViewById(R.id.ed_fname);
         ed_fee = findViewById(R.id.ed_age);
         ed_course =  findViewById(R.id.ed_dob);
@@ -42,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void btnNext(View view) {
+
     }
 
     public void btnPrevious(View view) {

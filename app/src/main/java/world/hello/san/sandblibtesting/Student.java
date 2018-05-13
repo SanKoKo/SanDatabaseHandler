@@ -7,20 +7,18 @@ import san.db.handler.SanDbResult;
 import san.db.handler.SetColumnAttr;
 
 public class Student extends SanDbResult<Student>{
-
+    @SetColumnAttr(setPrimary = true,setAutoIncrement = true)
     private int id;
     private String name;
-    private String course,fee,fatherName;
-
-    Bitmap student_photo;
+    private String dob,age,fatherName;
 
     public Student() {
     }
 
-    public Student(String name, String course, String fee, String fatherName) {
+    public Student(String name, String dob, String age, String fatherName) {
         this.name = name;
-        this.course = course;
-        this.fee = fee;
+        this.dob = dob;
+        this.age = age;
         this.fatherName = fatherName;
     }
 
@@ -40,20 +38,20 @@ public class Student extends SanDbResult<Student>{
         this.name = name;
     }
 
-    public String getCourse() {
-        return course;
+    public String getDob() {
+        return dob;
     }
 
-    public void setCourse(String course) {
-        this.course = course;
+    public void setDob(String dob) {
+        this.dob = dob;
     }
 
-    public String getFee() {
-        return fee;
+    public String getAge() {
+        return age;
     }
 
-    public void setFee(String fee) {
-        this.fee = fee;
+    public void setAge(String age) {
+        this.age = age;
     }
 
     public String getFatherName() {
@@ -63,6 +61,4 @@ public class Student extends SanDbResult<Student>{
     public void setFatherName(String fatherName) {
         this.fatherName = fatherName;
     }
-
-
 }
