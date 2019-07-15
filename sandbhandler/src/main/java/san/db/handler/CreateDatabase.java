@@ -34,7 +34,6 @@ class CreateDatabase extends SQLiteOpenHelper{
 	private static String dbName;
 	@SuppressLint("StaticFieldLeak")
 	private static Context context;
-	private SQLiteDatabase sqLiteDatabase;
 	private HashMap<String,Table> tableHash;
 	private String[] columnDef = new String[4];
 	@SuppressWarnings("static-access")
@@ -96,7 +95,6 @@ class CreateDatabase extends SQLiteOpenHelper{
 
 			}
 		}
-		arg0.close();
 	}
 
 	@Override
@@ -229,7 +227,7 @@ class CreateDatabase extends SQLiteOpenHelper{
 				System.out.println("SanSQL Log : "+sql);
 			}
 
-			sqLiteDatabase = getReadableDatabase();
+			SQLiteDatabase sqLiteDatabase = getReadableDatabase();
 			Cursor cursor = sqLiteDatabase.rawQuery(sql,null);
 
 			try {
@@ -342,7 +340,7 @@ class CreateDatabase extends SQLiteOpenHelper{
 
 	@SuppressWarnings("rawtypes")
 	void add(SanDbResult sanDbResult, String tableName,Boolean update,String where,String[] whereArgs) throws NoSuchFieldException, IllegalAccessException {
-		sqLiteDatabase = getWritableDatabase();
+		SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         Field[] fields = sanDbResult.getClass().getDeclaredFields();
 		HashMap<String,Column> mapColumn = new HashMap<>();
 
@@ -408,7 +406,7 @@ class CreateDatabase extends SQLiteOpenHelper{
 
 	@SuppressWarnings({ "rawtypes" })
 	 void delete(SanDbResult sanDbResult, String tableName,String where,String[] whereArgs) throws NoSuchFieldException, IllegalAccessException {
-		sqLiteDatabase = getWritableDatabase();
+		SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         Field[] fields = sanDbResult.getClass().getDeclaredFields();
 		Table  table = SanDBHandler.mTable(sanDbResult.getClass());
 		if(tableName==null)
@@ -434,7 +432,7 @@ class CreateDatabase extends SQLiteOpenHelper{
 
 	
 	 private void deleteByQuery(String tableName, String where, String[] whereArgs) throws NoSuchFieldException, IllegalAccessException {
-		sqLiteDatabase = getWritableDatabase();
+		 SQLiteDatabase sqLiteDatabase = getWritableDatabase();
        if(tableName==null)
 		{
 			tableName = tables[0].getTbName();
@@ -472,8 +470,7 @@ class CreateDatabase extends SQLiteOpenHelper{
 	            }
 
 		}
-		sqLiteDatabase.close();
-		
+
 	}
 
 

@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sanDBHandler = new SanDBHandler(this);
+        sanDBHandler.createDatabaseByClass("studentInfo",Student.class);
         spinner =  findViewById(R.id.spinner);
         mList = new ArrayList<>();
         ed_fathername = findViewById(R.id.ed_fname);
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void btInsertClick(View view) {
-
+        new Student(ed_name.getText().toString(),ed_course.getText().toString(),ed_fathername.getText().toString(),ed_fee.getText().toString()).insert();
     }
 
     public void btnUpdate(View view) {
