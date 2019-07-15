@@ -96,6 +96,7 @@ class CreateDatabase extends SQLiteOpenHelper{
 
 			}
 		}
+		arg0.close();
 	}
 
 	@Override
@@ -306,7 +307,7 @@ class CreateDatabase extends SQLiteOpenHelper{
 				list.add(entity);
 			}while (cursor.moveToNext());
 			cursor.close();
-
+			sqLiteDatabase.close();
 		} else {
 			throw new SanDBHandlerErrorException("Database was not created!");
 		}
@@ -398,6 +399,7 @@ class CreateDatabase extends SQLiteOpenHelper{
 		} else {
 			sqLiteDatabase.update(tableName,contentValues,where,whereArgs);
 		}
+        sqLiteDatabase.close();
 	}
 
 	private String Upper(String str) {
@@ -427,6 +429,7 @@ class CreateDatabase extends SQLiteOpenHelper{
 		}else {
 			deleteByQuery(tableName,where,whereArgs);
 		}
+		sqLiteDatabase.close();
 	}
 
 	
@@ -437,6 +440,7 @@ class CreateDatabase extends SQLiteOpenHelper{
 			tableName = tables[0].getTbName();
 		}
 		sqLiteDatabase.delete(tableName, where, whereArgs);
+       sqLiteDatabase.close();
 	}
 
 
@@ -468,7 +472,7 @@ class CreateDatabase extends SQLiteOpenHelper{
 	            }
 
 		}
-		
+		sqLiteDatabase.close();
 		
 	}
 
