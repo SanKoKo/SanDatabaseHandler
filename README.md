@@ -34,7 +34,7 @@ root build.gradle ထဲက allproject ထဲမှာအောက်ပါအ�
 app gradle ထဲက dependencies ထဲမှာအောက်ပါအတိုင်း ထည့်ပေးရပါမယ်။
 
 	dependencies {
-		implementation 'com.github.SanKoKo:SanDatabaseHandler:1.3'
+		implementation 'com.github.SanKoKo:SanDatabaseHandler:1.4'
 	}
 
 
