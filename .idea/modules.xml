@@ -5,8 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/SanDatabaseHandler.iml" filepath="$PROJECT_DIR$/SanDatabaseHandler.iml" />
       <module fileurl="file://$PROJECT_DIR$/SanDbLibTesting.iml" filepath="$PROJECT_DIR$/SanDbLibTesting.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sandbhandler/sandbhandler.iml" filepath="$PROJECT_DIR$/sandbhandler/sandbhandler.iml" />
       <module fileurl="file://$PROJECT_DIR$/sandbhandler/sandbhandler.iml" filepath="$PROJECT_DIR$/sandbhandler/sandbhandler.iml" />
     </modules>
   </component>

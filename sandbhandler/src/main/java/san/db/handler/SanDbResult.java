@@ -85,6 +85,29 @@ public class SanDbResult<T> {
 
 		return null;
 	}
+
+	public static <T extends SanDbResult<T>> List<T> getAllData(Class<?> mClass,int limit,int offset) {
+		Table table = SanDBHandler.mTable(mClass);
+		try {
+			return CreateDatabase.getInstance().getAllData(mClass, table.getTbName(), null,null,limit,offset);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static <T extends SanDbResult> T getDataById(Class<?> mClass,int id){
 		Table table = SanDBHandler.mTable(mClass);
