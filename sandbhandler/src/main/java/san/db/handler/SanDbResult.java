@@ -286,4 +286,8 @@ public class SanDbResult<T> {
 		}
 	}
 
+	public static int count(Class<?> clazz){
+		return CreateDatabase.getInstance().getCount(clazz);
+	}
+
 }

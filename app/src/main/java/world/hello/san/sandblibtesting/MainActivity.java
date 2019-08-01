@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void btnUpdate(View view) {
+        System.out.println(Student.count(Student.class)+" mCount:::");
     }
 
     public void btnDelete(View view) {

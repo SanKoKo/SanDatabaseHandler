@@ -603,6 +603,17 @@ class CreateDatabase extends SQLiteOpenHelper{
 
 		 return list;
 	}
+
+	public int getCount(Class<?> sanDbResult) {
+		SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+		Table  table = SanDBHandler.mTable(sanDbResult);
+		String sql = "SELECT COUNT(*) FROM "+table.getTbName();
+		Cursor c = sqLiteDatabase.rawQuery(sql,null);
+		c.moveToFirst();
+		int total = c.getInt(0);
+		c.close();
+		return total;
+	}
 }
 
 
