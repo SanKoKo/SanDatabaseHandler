@@ -508,10 +508,10 @@ class CreateDatabase extends SQLiteOpenHelper{
 					 ++count;
 				 }
 
-				 sql = "SELECT * FROM "+tb+" WHERE "+sb.toString()+" LIMIT = "+limit + " OFFSET = "+offset;
+				 sql = "SELECT * FROM "+tb+" WHERE "+sb.toString()+" LIMIT "+limit + " OFFSET "+offset;
 
 			 } else {
-				 sql = "SELECT * FROM "+tb+" LIMIT = "+limit + " OFFSET = "+offset;
+				 sql = "SELECT * FROM "+tb+" LIMIT "+limit + " OFFSET "+offset;
 			 }
 
 			 if(SanDBHandler.getShowLog()){
