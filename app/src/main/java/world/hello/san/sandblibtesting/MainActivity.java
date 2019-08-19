@@ -11,6 +11,7 @@ import java.util.List;
 
 import san.db.handler.Column;
 import san.db.handler.Database;
+import san.db.handler.Order;
 import san.db.handler.SanDBHandler;
 import san.db.handler.Table;
 
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void btnUpdate(View view) {
         System.out.println(Student.count(Student.class)+" mCount:::");
+        Student.getDataByQuery(Student.class,"",new String[]{});
     }
 
     public void btnDelete(View view) {

@@ -366,6 +366,7 @@ class CreateDatabase extends SQLiteOpenHelper{
 		ContentValues contentValues = new ContentValues();
         for(Field field : fields)
         {
+        	if(field.isSynthetic()) continue;
 			field = sanDbResult.getClass().getDeclaredField(field.getName());
 			field.setAccessible(true);
 
@@ -417,6 +418,7 @@ class CreateDatabase extends SQLiteOpenHelper{
 		if(where==null&&whereArgs==null) {
 
 			for (Field field : fields) {
+				if(field.isSynthetic()) continue;
 				field = sanDbResult.getClass().getDeclaredField(field.getName());
 				field.setAccessible(true);
 				if (field.getName().equals("id")) {
@@ -488,120 +490,136 @@ class CreateDatabase extends SQLiteOpenHelper{
     }
 
 	 //<T extends SanDbResult<T>> List<T> getAllData(Class<?> mClass, String tbName, String o, String o1, int limit, int offset) {
-	 <T extends SanDbResult<T>> List<T> getAllData(Class<?> mClass, String tb, String selection, String[] selectionArgs,int limit, int offset) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException{
-	List<T> list= new ArrayList<>();
-
-		 if(dbName!=null) {
-
-			 if(tb==null)
-			 {
-				 tb = tables[0].getTbName();
-			 }
-			 String sql ="";
-			 int count=0;
-			 if(selection !=null && selectionArgs!=null){
-				 StringTokenizer stk = new StringTokenizer(selection,"?");
-				 StringBuilder sb = new StringBuilder();
-				 while(stk.hasMoreElements())
-				 {
-					 sb.append(stk.nextToken()).append("'").append(selectionArgs[count]).append("'");
-					 ++count;
-				 }
-
-				 sql = "SELECT * FROM "+tb+" WHERE "+sb.toString()+" LIMIT "+limit + " OFFSET "+offset;
-
-			 } else {
-				 sql = "SELECT * FROM "+tb+" LIMIT "+limit + " OFFSET "+offset;
-			 }
-
-			 if(SanDBHandler.getShowLog()){
-				 System.out.println("SanSQL Log : "+sql);
-			 }
-
-			 SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-			 Cursor cursor = sqLiteDatabase.rawQuery(sql,null);
-
-			 try {
-				 columns = tableHash.get(tb).getColumns();
-			 } catch (NullPointerException npe)
-			 {
-				 Table table = SanDBHandler.mTable(mClass);
-				 columns = table.getColumns();
-			 }
-
-
-			 //columns = new Column[cursor.getColumnCount()];
-			 for(int i=0;i<cursor.getColumnCount();i++)
-			 {
-				 columns[i].setColumnName(cursor.getColumnName(i));
-			 }
-
-			 HashMap<String, Class> mapper = new HashMap<>();
-			 List<String> listKey = new ArrayList<>();
-			 Class cls = Class.forName(mClass.getName());
-
-			 Method[] methods = cls.getDeclaredMethods();
-			 for(Method method : methods) {
-				 Class<?> type;
-				 String methodName;
-				 if(method.getName().startsWith("get")){
-					 type = method.getReturnType();
-					 methodName = "set"+method.getName().substring(3);
-					 listKey.add(methodName);
-					 mapper.put(methodName, type);
-				 }
-
-			 }
-
-			 listKey = arrangeList(listKey);
-			 cursor.moveToFirst();
-
-			 do {
-				 T entity	 = (T) cls.newInstance();
-				 for(int i=0;i<listKey.size();i++)
-				 {
-
-					 String key = listKey.get(i);
-					 Method method = cls.getDeclaredMethod(key, mapper.get(key));
-					 try {
-						 if (mapper.get(key).equals(int.class) || mapper.get(key).equals(Integer.class)) {
-							 method.invoke(entity, cursor.getInt(i));
-						 } else if (mapper.get(key).equals(String.class)) {
-							 if(SanDBHandler.getSecure()){
-								 method.invoke(entity, Encrypt.decrypt(Build.ID+"San99",cursor.getString(i)));
-							 } else {
-								 method.invoke(entity, cursor.getString(i)); }
-						 } else if(mapper.get(key).equals(char.class))
-						 {
-							 method.invoke(entity, cursor.getString(i));
-						 }
-
-						 else if (mapper.get(key).equals(Blob.class)) {
-							 method.invoke(entity, (Object) cursor.getBlob(i));
-						 } else if (mapper.get(key).equals(Boolean.class) || mapper.get(key).equals(boolean.class)) {
-							 method.invoke(entity, cursor.getInt(i) > 0);
-						 } else if (mapper.get(key).equals(Bitmap.class)) {
-							 method.invoke(entity, ByteToBitmap.getImage(cursor.getBlob(i)));
-						 } else if (mapper.get(key).equals(Long.class) || mapper.get(key).equals(long.class)) {
-							 method.invoke(entity, cursor.getLong(i));
-						 } else if (mapper.get(key).equals(Double.class) || mapper.get(key).equals(double.class)) {
-							 method.invoke(entity, cursor.getDouble(i));
-						 } else if (mapper.get(key).equals(Float.class) || mapper.get(key).equals(float.class)) {
-							 method.invoke(entity, cursor.getFloat(i));
-						 } else {
-							 method.invoke(entity, cursor.getString(i));
-						 }
-					 }catch (CursorIndexOutOfBoundsException ciob){ciob.printStackTrace(); return null;}
-				 }
-				 list.add(entity);
-			 }while (cursor.moveToNext());
-			 cursor.close();
-			 sqLiteDatabase.close();
-		 } else {
-			 throw new SanDBHandlerErrorException("Database was not created!");
+	 <T extends SanDbResult<T>> List<T> getAllData(Class<?> mClass, String tb, String selection, String[] selectionArgs,int limit, int offset){
+		 try {
+			 return getPaginate(mClass,tb,selection,selectionArgs,limit,offset);
+		 } catch (ClassNotFoundException e) {
+			 e.printStackTrace();
+		 } catch (InstantiationException e) {
+			 e.printStackTrace();
+		 } catch (IllegalAccessException e) {
+			 e.printStackTrace();
+		 } catch (NoSuchMethodException e) {
+			 e.printStackTrace();
+		 } catch (InvocationTargetException e) {
+			 e.printStackTrace();
 		 }
+		 return null;
+	 }
 
-		 return list;
+	private <T extends SanDbResult<T>> List<T> getPaginate(Class<?> mClass, String tb, String selection, String[] selectionArgs, int limit, int offset)  throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException{
+		List<T> list= new ArrayList<>();
+
+		if(dbName!=null) {
+
+			if(tb==null)
+			{
+				tb = tables[0].getTbName();
+			}
+			String sql ="";
+			int count=0;
+			if(selection !=null && selectionArgs!=null){
+				StringTokenizer stk = new StringTokenizer(selection,"?");
+				StringBuilder sb = new StringBuilder();
+				while(stk.hasMoreElements())
+				{
+					sb.append(stk.nextToken()).append("'").append(selectionArgs[count]).append("'");
+					++count;
+				}
+
+				sql = "SELECT * FROM "+tb+" WHERE "+sb.toString()+" LIMIT "+limit + " OFFSET "+offset;
+
+			} else {
+				sql = "SELECT * FROM "+tb+" LIMIT "+limit + " OFFSET "+offset;
+			}
+
+			if(SanDBHandler.getShowLog()){
+				System.out.println("SanSQL Log : "+sql);
+			}
+
+			SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+			Cursor cursor = sqLiteDatabase.rawQuery(sql,null);
+
+			try {
+				columns = tableHash.get(tb).getColumns();
+			} catch (NullPointerException npe)
+			{
+				Table table = SanDBHandler.mTable(mClass);
+				columns = table.getColumns();
+			}
+
+
+			//columns = new Column[cursor.getColumnCount()];
+			for(int i=0;i<cursor.getColumnCount();i++)
+			{
+				columns[i].setColumnName(cursor.getColumnName(i));
+			}
+
+			HashMap<String, Class> mapper = new HashMap<>();
+			List<String> listKey = new ArrayList<>();
+			Class cls = Class.forName(mClass.getName());
+
+			Method[] methods = cls.getDeclaredMethods();
+			for(Method method : methods) {
+				Class<?> type;
+				String methodName;
+				if(method.getName().startsWith("get")){
+					type = method.getReturnType();
+					methodName = "set"+method.getName().substring(3);
+					listKey.add(methodName);
+					mapper.put(methodName, type);
+				}
+
+			}
+
+			listKey = arrangeList(listKey);
+			cursor.moveToFirst();
+
+			do {
+				T entity	 = (T) cls.newInstance();
+				for(int i=0;i<listKey.size();i++)
+				{
+
+					String key = listKey.get(i);
+					Method method = cls.getDeclaredMethod(key, mapper.get(key));
+					try {
+						if (mapper.get(key).equals(int.class) || mapper.get(key).equals(Integer.class)) {
+							method.invoke(entity, cursor.getInt(i));
+						} else if (mapper.get(key).equals(String.class)) {
+							if(SanDBHandler.getSecure()){
+								method.invoke(entity, Encrypt.decrypt(Build.ID+"San99",cursor.getString(i)));
+							} else {
+								method.invoke(entity, cursor.getString(i)); }
+						} else if(mapper.get(key).equals(char.class))
+						{
+							method.invoke(entity, cursor.getString(i));
+						}
+
+						else if (mapper.get(key).equals(Blob.class)) {
+							method.invoke(entity, (Object) cursor.getBlob(i));
+						} else if (mapper.get(key).equals(Boolean.class) || mapper.get(key).equals(boolean.class)) {
+							method.invoke(entity, cursor.getInt(i) > 0);
+						} else if (mapper.get(key).equals(Bitmap.class)) {
+							method.invoke(entity, ByteToBitmap.getImage(cursor.getBlob(i)));
+						} else if (mapper.get(key).equals(Long.class) || mapper.get(key).equals(long.class)) {
+							method.invoke(entity, cursor.getLong(i));
+						} else if (mapper.get(key).equals(Double.class) || mapper.get(key).equals(double.class)) {
+							method.invoke(entity, cursor.getDouble(i));
+						} else if (mapper.get(key).equals(Float.class) || mapper.get(key).equals(float.class)) {
+							method.invoke(entity, cursor.getFloat(i));
+						} else {
+							method.invoke(entity, cursor.getString(i));
+						}
+					}catch (CursorIndexOutOfBoundsException ciob){ciob.printStackTrace(); return null;}
+				}
+				list.add(entity);
+			}while (cursor.moveToNext());
+			cursor.close();
+			sqLiteDatabase.close();
+		} else {
+			throw new SanDBHandlerErrorException("Database was not created!");
+		}
+		return list;
 	}
 
 	public int getCount(Class<?> sanDbResult) {
