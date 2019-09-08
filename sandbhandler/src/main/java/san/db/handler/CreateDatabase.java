@@ -213,7 +213,11 @@ class CreateDatabase extends SQLiteOpenHelper{
 				StringBuilder sb = new StringBuilder();
 				while(stk.hasMoreElements())
 				{
-					sb.append(stk.nextToken()).append("'").append(selectionArgs[count]).append("'");
+					String data = selectionArgs[count];
+					if(SanDBHandler.getSecure()){
+						data = Encrypt.encrypt(Build.ID+"San99",data);
+					}
+					sb.append(stk.nextToken()).append("'").append(data).append("'");
 					++count;
 				}
 
